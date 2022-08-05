@@ -1,10 +1,10 @@
 
 <div class="upload-container">
-	<h1>[1] 產品資料表</h1>
+	<h5>[1] 產品資料表</h5>
     <input type="file" id="fileUpload_base" multiple="true" onchange="Load_base()"/>
 </div>
 <div class="upload-container">
-	<h1>[2] 站上銷售表</h1>
+	<h5>[2] 站上銷售表</h5>
     <input type="file" id="fileUpload_input" multiple="true" onchange="Load_input()"/>
 </div>
 <button type="button" disabled onclick="OutputResult() ">計算銷售表</button>  
