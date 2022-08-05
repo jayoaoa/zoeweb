@@ -1,0 +1,572 @@
+<input type="file" id="fileUpload_base" />
+<input type="file" id="fileUpload_input" />
+<input type="button" id="upload_base" value="上傳產品資料" onclick="Load_base()" />
+<input type="button" id="upload_input" value="上傳站上資料" onclick="Load_input()" />
+<input type="button" id="OutResult" value="計算銷售表" onclick="OutputResult()" />
+
+<div id="ExcelTable_result"></div>
+<div id="ExcelTable_base"></div>
+<div id="ExcelTable_input"></div>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.13.5/xlsx.full.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.13.5/jszip.js"></script>
+<script type="text/javascript">
+	var Type;
+	var base_row;
+	var input_row;
+	function Load_base(){
+		Type='base'
+		UploadProcess();
+	}
+	function Load_input(){
+		Type='input'
+		UploadProcess();
+	}
+    function UploadProcess() {
+        //Reference the FileUpload element.
+		var fileUpload;
+		if( Type == "base") {
+			fileUpload = document.getElementById("fileUpload_base");
+		}
+		else
+		{
+			fileUpload = document.getElementById("fileUpload_input");
+		}
+ 
+        //Validate whether File is valid Excel file.
+        var regex = /^([a-zA-Z0-9\s_\\.\-:])+(.xls|.xlsx)$/;
+        if (regex.test(fileUpload.value.toLowerCase())) {
+            if (typeof (FileReader) != "undefined") {
+                var reader = new FileReader();
+ 
+                //For Browsers other than IE.
+                if (reader.readAsBinaryString) {
+                    reader.onload = function (e) {
+                        GetTableFromExcel(e.target.result);
+                    };
+                    reader.readAsBinaryString(fileUpload.files[0]);
+                } else {
+                    //For IE Browser.
+                    reader.onload = function (e) {
+                        var data = "";
+                        var bytes = new Uint8Array(e.target.result);
+                        for (var i = 0; i < bytes.byteLength; i++) {
+                            data += String.fromCharCode(bytes[i]);
+                        }
+                        GetTableFromExcel(data);
+                    };
+                    reader.readAsArrayBuffer(fileUpload.files[0]);
+                }
+            } else {
+                alert("This browser does not support HTML5.");
+            }
+        } else {
+            alert("Please upload a valid Excel file.");
+        }
+    };
+    function GetTableFromExcel(data) {
+        //Read the Excel File data in binary
+        var workbook = XLSX.read(data, {
+            type: 'binary'
+        });
+ 
+        //get the name of First Sheet.
+        var Sheet = workbook.SheetNames[0];
+ 
+        //Read all rows from First Sheet into an JSON array.
+        var excelRows = XLSX.utils.sheet_to_row_object_array(workbook.Sheets[Sheet]);
+ 
+		if( Type == "base") {
+			base_row = excelRows;
+		}
+		else
+		{
+			input_row = excelRows;
+		}
+        //Create a HTML Table element.
+        var myTable  = document.createElement("table");
+        myTable.border = "1";
+ 
+        //Add the header row.
+        var row = myTable.insertRow(-1);
+ 
+		if( Type == "base") {
+			//Add the header cells.
+			var headerCell = document.createElement("TH");
+			headerCell.innerHTML = "Part";
+			row.appendChild(headerCell);
+	 
+			headerCell = document.createElement("TH");
+			headerCell.innerHTML = "Name";
+			row.appendChild(headerCell);
+	 
+			headerCell = document.createElement("TH");
+			headerCell.innerHTML = "Cost";
+			row.appendChild(headerCell);
+			
+			headerCell = document.createElement("TH");
+			headerCell.innerHTML = "Price";
+			row.appendChild(headerCell);
+	 
+	 
+			//Add the data rows from Excel file.
+			for (var i = 0; i < excelRows.length; i++) {
+				//Add the data row.
+				var row = myTable.insertRow(-1);
+	 
+				//Add the data cells.
+				var cell = row.insertCell(-1);
+				cell.innerHTML = excelRows[i].Part;
+	 
+				cell = row.insertCell(-1);
+				cell.innerHTML = excelRows[i].Name;
+	 
+				cell = row.insertCell(-1);
+				cell.innerHTML = excelRows[i].Cost;
+				
+				cell = row.insertCell(-1);
+				cell.innerHTML = excelRows[i].Price;
+			}
+		}
+		else
+		{
+			//Add the header cells.
+			var headerCell = document.createElement("TH");
+			headerCell.innerHTML = "A";
+			row.appendChild(headerCell);
+	 
+			headerCell = document.createElement("TH");
+			headerCell.innerHTML = "B";
+			row.appendChild(headerCell);
+			
+			headerCell = document.createElement("TH");
+			headerCell.innerHTML = "G";
+			row.appendChild(headerCell);
+			
+			headerCell = document.createElement("TH");
+			headerCell.innerHTML = "H";
+			row.appendChild(headerCell);
+			
+			headerCell = document.createElement("TH");
+			headerCell.innerHTML = "I";
+			row.appendChild(headerCell);
+			
+			headerCell = document.createElement("TH");
+			headerCell.innerHTML = "K";
+			row.appendChild(headerCell);
+			
+			headerCell = document.createElement("TH");
+			headerCell.innerHTML = "L";
+			row.appendChild(headerCell);
+			
+			headerCell = document.createElement("TH");
+			headerCell.innerHTML = "M";
+			row.appendChild(headerCell);
+			
+			headerCell = document.createElement("TH");
+			headerCell.innerHTML = "N";
+			row.appendChild(headerCell);
+			
+			headerCell = document.createElement("TH");
+			headerCell.innerHTML = "O";
+			row.appendChild(headerCell);
+			
+			headerCell = document.createElement("TH");
+			headerCell.innerHTML = "Q";
+			row.appendChild(headerCell);
+	 
+	 
+			//Add the data rows from Excel file.
+			for (var i = 0; i < excelRows.length; i++) {
+				//Add the data row.
+				var row = myTable.insertRow(-1);
+	 
+				//Add the data cells.
+				var cell = row.insertCell(-1);
+				cell.innerHTML = excelRows[i].A;
+	 
+				cell = row.insertCell(-1);
+				cell.innerHTML = excelRows[i].B;
+				
+				cell = row.insertCell(-1);
+				cell.innerHTML = excelRows[i].G;
+				
+				cell = row.insertCell(-1);
+				cell.innerHTML = excelRows[i].H;
+				
+				cell = row.insertCell(-1);
+				cell.innerHTML = excelRows[i].I;
+				
+				cell = row.insertCell(-1);
+				cell.innerHTML = excelRows[i].K
+				
+				cell = row.insertCell(-1);
+				cell.innerHTML = excelRows[i].L;
+				
+				cell = row.insertCell(-1);
+				cell.innerHTML = excelRows[i].M;
+				
+				cell = row.insertCell(-1);
+				cell.innerHTML = excelRows[i].N;
+				
+				cell = row.insertCell(-1);
+				cell.innerHTML = excelRows[i].O;
+				
+				cell = row.insertCell(-1);
+				cell.innerHTML = excelRows[i].Q;
+			}
+		}
+        
+ 
+        var ExcelTable;
+		if( Type == "base") {
+			ExcelTable = document.getElementById("ExcelTable_base");
+		}
+		else
+		{
+			ExcelTable = document.getElementById("ExcelTable_input");
+		}
+        ExcelTable.innerHTML = "";
+        ExcelTable.appendChild(myTable);
+    };
+	function OutputResult()
+	{
+        //Create a HTML Table element.
+        var myTable  = document.createElement("table");
+        myTable.border = "1";
+ 
+        //Add the header row.
+        var row = myTable.insertRow(-1);
+
+		//Add the header cells.
+		var headerCell = document.createElement("TH");
+		headerCell.innerHTML = "項次";
+		row.appendChild(headerCell);
+
+		var headerCell = document.createElement("TH");
+		headerCell.innerHTML = "銷售編號";
+		row.appendChild(headerCell);
+	 
+		headerCell = document.createElement("TH");
+		headerCell.innerHTML = "贈品品項";
+		row.appendChild(headerCell);
+	 
+		headerCell = document.createElement("TH");
+		headerCell.innerHTML = "銷售數量A";
+		row.appendChild(headerCell);
+		
+		headerCell = document.createElement("TH");
+		headerCell.innerHTML = "售價(元)";
+		row.appendChild(headerCell);
+		
+		headerCell = document.createElement("TH");
+		headerCell.innerHTML = "成本單價<br>(未稅/元)";
+		row.appendChild(headerCell);
+		
+		headerCell = document.createElement("TH");
+		headerCell.innerHTML = "銷售成本<br>(未稅/元)";
+		row.appendChild(headerCell);
+		
+		headerCell = document.createElement("TH");
+		headerCell.innerHTML = "初期存量B";
+		row.appendChild(headerCell);
+		
+		headerCell = document.createElement("TH");
+		headerCell.innerHTML = "進貨C";
+		row.appendChild(headerCell);
+		
+		headerCell = document.createElement("TH");
+		headerCell.innerHTML = "退貨G";
+		row.appendChild(headerCell);
+		
+		headerCell = document.createElement("TH");
+		headerCell.innerHTML = "盤盈撥入E";
+		row.appendChild(headerCell);
+		
+		headerCell = document.createElement("TH");
+		headerCell.innerHTML = "盤虧撥出F";
+		row.appendChild(headerCell);
+		
+		headerCell = document.createElement("TH");
+		headerCell.innerHTML = "期末存貨<br>D=B+C-A+E-F-G";
+		row.appendChild(headerCell);
+		
+		headerCell = document.createElement("TH");
+		headerCell.innerHTML = "期末成本<br>(未稅/元)";
+		row.appendChild(headerCell);
+
+		//Add the data rows from Excel file.
+		for (var i = 0; i < base_row.length; i++) {
+			//Add the data row.
+			var row = myTable.insertRow(-1);
+
+			//項次
+			var cell = row.insertCell(-1);
+			cell.innerHTML = i+1;
+
+			//銷售編號
+			var cell = row.insertCell(-1);
+			cell.innerHTML = base_row[i].Part;
+
+			//贈品品項
+			cell = row.insertCell(-1);
+			cell.innerHTML = base_row[i].Name;
+
+			//銷售數量A
+			cell = row.insertCell(-1);
+			SaleCnt = parseFloat(GetSaleCnt(base_row[i].Part));
+			cell.innerHTML = SaleCnt;
+			
+			//售價(元)
+			cell = row.insertCell(-1);
+			if(base_row[i].Price)
+				cell.innerHTML = base_row[i].Price;
+			else
+				cell.innerHTML = "0";
+
+			//成本單價(未稅/元)
+			cell = row.insertCell(-1);
+			if(base_row[i].Cost)
+				cell.innerHTML = base_row[i].Cost;
+			else
+				cell.innerHTML = "0";
+			
+			//銷售成本(未稅/元)
+			cell = row.insertCell(-1);
+			if(base_row[i].Cost)
+				cell.innerHTML = SaleCnt * base_row[i].Cost;
+			else
+				cell.innerHTML = "0";
+	 
+			//初期存量B
+			cell = row.insertCell(-1);
+			CurCnt = parseFloat(GetCurCnt(base_row[i].Part));
+			cell.innerHTML = CurCnt;
+	 
+			//進貨C
+			cell = row.insertCell(-1);
+			InCnt = parseFloat(GetInputCnt(base_row[i].Part));
+			cell.innerHTML = InCnt;
+	 
+			//退貨G
+			cell = row.insertCell(-1);
+			RetCnt = parseFloat(GetReturnCnt(base_row[i].Part));
+			cell.innerHTML = RetCnt;
+	 
+			//撥入E
+			cell = row.insertCell(-1);
+			ChgIn = parseFloat(GetChgInCnt(base_row[i].Part));
+			cell.innerHTML = ChgIn;
+	 
+			//撥出F
+			cell = row.insertCell(-1);
+			ChgOut = parseFloat(GetChgOutCnt(base_row[i].Part));
+			cell.innerHTML = ChgOut;
+	 
+			//期末存貨<br>D=B+C-A+E-F-G
+			cell = row.insertCell(-1);
+			FinalCnt = CurCnt + InCnt + ChgIn - SaleCnt - RetCnt - ChgOut;
+			console.log(FinalCnt," = ",CurCnt," + ",InCnt," + ",ChgIn," - ",SaleCnt," - ",RetCnt," - ",ChgOut);
+			cell.innerHTML = FinalCnt;
+	 
+			//期末成本(未稅/元)
+			cell = row.insertCell(-1);
+			if(base_row[i].Cost)
+				cell.innerHTML = FinalCnt * base_row[i].Cost;
+			else
+				cell.innerHTML = "0";
+		} 
+
+		CalculateSummary();
+
+        var row = myTable.insertRow(-1);
+		//Add the tail cells.
+		var headerCell = document.createElement("TH");
+		headerCell.innerHTML = "總計";
+		row.appendChild(headerCell);
+
+		var headerCell = document.createElement("TH");
+		headerCell.innerHTML = "";
+		row.appendChild(headerCell);
+
+		headerCell = document.createElement("TH");
+		headerCell.innerHTML = "";
+		row.appendChild(headerCell);
+		//"銷售數量A"
+		headerCell = document.createElement("TH");
+		headerCell.innerHTML = tcnt;
+		row.appendChild(headerCell);
+		
+		headerCell = document.createElement("TH");
+		headerCell.innerHTML = "";
+		row.appendChild(headerCell);
+		
+		headerCell = document.createElement("TH");
+		headerCell.innerHTML = "";
+		row.appendChild(headerCell);
+		//"銷售成本<br>(未稅/元)"
+		headerCell = document.createElement("TH");
+		headerCell.innerHTML = tsalecost;
+		row.appendChild(headerCell);
+		//"初期存量B"
+		headerCell = document.createElement("TH");
+		headerCell.innerHTML = tcurcnt;
+		row.appendChild(headerCell);
+		//"進貨C"
+		headerCell = document.createElement("TH");
+		headerCell.innerHTML = tinput;
+		row.appendChild(headerCell);
+		//"退貨G";
+		headerCell = document.createElement("TH");
+		headerCell.innerHTML = tret;
+		row.appendChild(headerCell);
+		//"盤盈撥入E";
+		headerCell = document.createElement("TH");
+		headerCell.innerHTML = tchgin;
+		row.appendChild(headerCell);
+		//"盤虧撥出F";
+		headerCell = document.createElement("TH");
+		headerCell.innerHTML = tchgout;
+		row.appendChild(headerCell);
+		//"期末存貨<br>D=B+C-A+E-F-G";
+		headerCell = document.createElement("TH");
+		headerCell.innerHTML = tfinalcnt;
+		row.appendChild(headerCell);
+		//"期末成本<br>(未稅/元)";
+		headerCell = document.createElement("TH");
+		headerCell.innerHTML = tfindcost;
+		row.appendChild(headerCell);
+
+        var ExcelTable;
+		ExcelTable = document.getElementById("ExcelTable_result");
+        ExcelTable.innerHTML = "";
+        ExcelTable.appendChild(myTable);
+		
+	}
+	function GetSaleCnt(part)
+	{
+		for (var i = 0; i < input_row.length; i++) {
+			if(input_row[i].A == part)
+			{
+				console.log("Found",part);
+				if(input_row[i].I)
+					return input_row[i].I;
+			}
+		}
+		return 0;
+	}
+	function GetCurCnt(part)
+	{
+		for (var i = 0; i < input_row.length; i++) {
+			if(input_row[i].A == part)
+			{
+				console.log("Found",part);
+				if(input_row[i].G)
+					return input_row[i].G;
+			}
+		}
+		return 0;
+	}
+	function GetInputCnt(part)
+	{
+		for (var i = 0; i < input_row.length; i++) {
+			if(input_row[i].A == part)
+			{
+				console.log("Found",part);
+				if(input_row[i].H)
+					return input_row[i].H;
+			}
+		}
+		return 0;
+	}
+	function GetChgInCnt(part)
+	{
+		for (var i = 0; i < input_row.length; i++) {
+			if(input_row[i].A == part)
+			{
+				console.log("Found",part);
+				if(input_row[i].L)
+					return input_row[i].L;
+			}
+		}
+		return 0;
+	}
+	function GetChgOutCnt(part)
+	{
+		for (var i = 0; i < input_row.length; i++) {
+			if(input_row[i].A == part)
+			{
+				console.log("Found",part);
+				if(input_row[i].M)
+					return input_row[i].M;
+			}
+		}
+		return 0;
+	}
+	function GetReturnCnt(part)
+	{
+		for (var i = 0; i < input_row.length; i++) {
+			if(input_row[i].A == part)
+			{
+				console.log("Found",part);
+				if(input_row[i].K)
+					return input_row[i].K;
+			}
+		}
+		return 0;
+	}
+	
+	var tcnt=0,tsalecost=0,tcurcnt=0,tinput=0,tret=0,tchgin=0,tchgout=0,tfinalcnt=0,tfindcost=0;
+	function CalculateSummary()
+	{
+		tcnt=0;
+		tsalecost=0;
+		tcurcnt=0;
+		tinput=0;
+		tret=0;
+		tchgin=0;
+		tchgout=0;
+		tfinalcnt=0;
+		tfindcost=0;
+		//Add the data rows from Excel file.
+		for (var i = 0; i < base_row.length; i++) {
+
+			//銷售數量A
+			SaleCnt = parseFloat(GetSaleCnt(base_row[i].Part));
+			tcnt = tcnt + SaleCnt;
+			
+			//銷售成本(未稅/元)
+			if(base_row[i].Cost)
+				tsalecost = tsalecost + (SaleCnt * base_row[i].Cost);
+	 
+			//初期存量B
+			CurCnt = parseFloat(GetCurCnt(base_row[i].Part));
+			tcurcnt = tcurcnt + CurCnt;
+	 
+			//進貨C
+			InCnt = parseFloat(GetInputCnt(base_row[i].Part));
+			tinput = tinput + InCnt;
+	 
+			//退貨G
+			RetCnt = parseFloat(GetReturnCnt(base_row[i].Part));
+			tret = tret + RetCnt;
+	 
+			//撥入E
+			ChgIn = parseFloat(GetChgInCnt(base_row[i].Part));
+			tchgin = tchgin + ChgIn;
+	 
+			//撥出F
+			ChgOut = parseFloat(GetChgOutCnt(base_row[i].Part));
+			tchgout = tchgout + ChgOut;
+	 
+			//期末存貨<br>D=B+C-A+E-F-G
+			FinalCnt = CurCnt + InCnt + ChgIn - SaleCnt - RetCnt - ChgOut;
+			console.log(FinalCnt," = ",CurCnt," + ",InCnt," + ",ChgIn," - ",SaleCnt," - ",RetCnt," - ",ChgOut);
+			tfinalcnt = tfinalcnt + FinalCnt;
+	 
+			//期末成本(未稅/元)
+			if(base_row[i].Cost)
+				tfindcost = tfindcost + (FinalCnt * base_row[i].Cost);
+		} 
+		
+	}
+</script>
